@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import {FormQuestionView} from '../components/FormQuestionView';
 import {expireToken} from '../../../../../constants/Helper';
@@ -10,13 +10,15 @@ import {
   validateFormQuestionData,
 } from '../../../Forms/questions/helper';
 import {useDispatch} from 'react-redux';
-import {showNotification} from '../../../../../actions/notification.action';
 import {GetRequestFormQuestionsDAO} from '../../../../../DAO';
 import {downloadFormQuestionImages} from '../../../../../services/DownloadService/ImageDownload';
 import LoadingBar from '../../../../../components/LoadingView/loading_bar';
 import AlertModal from '../../../../../components/modal/AlertModal';
 
+
+
 export default function FormQuestionContainer(props) {
+
   const {form, leadForms, customMasterFields, selectedLists} = props;
 
   const [formQuestions, setQuestions] = useState([]);
@@ -51,7 +53,11 @@ export default function FormQuestionContainer(props) {
       })
       .catch(e => {
         hideLoadingBar();
-        expireToken(dispatch, e, alertModalRef);
+        var delay = Platform.OS == 'android' ? 0 : 800;
+        setTimeout(() => {
+          expireToken(dispatch, e, alertModalRef);
+        }, delay);
+        
       });
   };
 
@@ -77,9 +83,12 @@ export default function FormQuestionContainer(props) {
   };
 
   const hideLoadingBar = () => {
-    if(loadingBarRef.current){
-      loadingBarRef.current.hideModal();
-    }          
+    var delay = Platform.OS == 'ios' ? 800 : 0;    
+    setTimeout(() => {
+      if(loadingBarRef.current){
+        loadingBarRef.current.hideModal();
+      }
+    }, delay);
   }
 
   const groupByQuestions = data => {
@@ -94,7 +103,6 @@ export default function FormQuestionContainer(props) {
             element.value,
           );
         }
-
         // updated value for tired mutiple choice
         if (
           element.question_type ===
@@ -131,7 +139,7 @@ export default function FormQuestionContainer(props) {
         }
       });
       updateFormQuestionsForDownloading(newData);
-      
+
     }catch(e) {
       hideLoadingBar();
     }
@@ -173,13 +181,9 @@ export default function FormQuestionContainer(props) {
   const onSave = () => {
     var error = validateFormQuestionData(formQuestions);
     if (error) {
-      dispatch(
-        showNotification({
-          type: 'success',
-          message: error,
-          buttonText: Strings.Ok,
-        }),
-      );
+      if(alertModalRef.current){
+        alertModalRef.current.alert(error);
+      }      
       return;
     } else {
       var form_answers = [];

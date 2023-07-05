@@ -212,4 +212,18 @@ export const style = StyleSheet.create({
     borderWidth: 1,
     borderColor: whiteLabel().itemSelectedBackground,
   },
+
+  divider:{
+    height:1,
+    width: '100%',
+    backgroundColor:'#eee',        
+  },
+
+  buttonText:{
+    fontFamily:Fonts.secondaryBold,
+    fontSize:16,
+    color:whiteLabel().mainText,        
+    padding:10
+  },  
+
 });

@@ -1,7 +1,6 @@
 import {
   STATUS_PIN_KEY,
-  STATUS_LOCATION_MAP,
-  STATUS_LOCATION_FILTERS,
+  STATUS_LOCATION_MAP,  
   STATUS_LOCATION_SEARCH_LISTS,
   STATUS_LOCATION_INFO,
   CHANGE_PIN_KEY,
@@ -20,8 +19,7 @@ import {
 
 const initialState = {
   statusPinKeys: 'request',
-  statusLocationMaps: 'request',
-  statusLocationFilters: 'request',
+  statusLocationMaps: 'request',  
   statusLocationSearchLists: 'request',
   statusLocationInfo: 'request',
   statusLocationLeadfields: 'request',
@@ -74,11 +72,7 @@ export default (state = initialState, action) => {
         ...state,
         statusLocationMaps: action.payload,
       };
-    case STATUS_LOCATION_FILTERS:
-      return {
-        ...state,
-        statusLocationFilters: action.payload,
-      };
+
     case STATUS_LOCATION_SEARCH_LISTS:
       return {
         ...state,

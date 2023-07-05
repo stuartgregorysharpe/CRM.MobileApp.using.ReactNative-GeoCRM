@@ -100,12 +100,16 @@ export default function AddStockView(props) {
   };
 
   const isDuplicateData = () =>{
-    if(additionalImei != '1'){
+    if( msnRequired == '1' && additionalImei == '1'){
+      if(gImei.trim() === gMsn.trim() || gImei.trim() === gAdditionalImei.trim() || gMsn.trim() === gAdditionalImei.trim() ){
+        return true;
+      }
+    }else if( msnRequired == '1' && additionalImei != '1'){ 
       if(gImei === gMsn){
         return true;
-      }      
-    }else{
-      if(gImei.trim() === gMsn.trim() || gImei.trim() === gAdditionalImei.trim() || gMsn.trim() === gAdditionalImei.trim() ){
+      }
+    }else if( msnRequired != '1' && additionalImei == '1'){ 
+      if(gImei.trim() === gAdditionalImei.trim()){
         return true;
       }
     }

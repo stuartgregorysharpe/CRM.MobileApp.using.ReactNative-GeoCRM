@@ -1,10 +1,8 @@
-import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect , useRef } from 'react';
-import {Platform, StyleSheet} from 'react-native';
+import {Platform } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  checkFeatureIncludeParamFromSession,
-  expireToken,
+import {  
+  expireToken,  
   getPostParameter,
 } from '../../../constants/Helper';
 import {
@@ -17,15 +15,15 @@ import SelectionPicker from '../../modal/SelectionPicker';
 import {SubmitButton} from '../../shared/SubmitButton';
 import {updateCurrentLocation} from '../../../actions/google.action';
 import {Constants, Strings} from '../../../constants';
-import {getDateTime} from '../../../helpers/formatHelpers';
+import {formattedNumber, getDateTime} from '../../../helpers/formatHelpers';
 import {LocationCheckinTypeDAO, PostRequestDAO} from '../../../DAO';
 import {CHECKIN} from '../../../actions/actionTypes';
 import {checkConnectivity} from '../../../DAO/helper';
-import {getLocationInfo} from '../../../actions/location.action';
 import { generateKey } from '../../../constants/Utils';
-import LoadingBar from '../../LoadingView/loading_bar';
-import AlertDialog from '../../modal/AlertDialog';
 import { getLocationInfoFromLocal } from '../../../sqlite/DBHelper';
+import CheckinRingFenceModal from '../../modal/checkin_ring_fence';
+import UpdateCustomerModal from '../../../screens/GeoRep/CRM/update_customer';
+import { getDistanceBwtCurrentAndLocation, haveAddressUpdate } from './helper';
 
 var checkin_indempotency = '';
 var checkin_type_id = '';
@@ -33,13 +31,18 @@ var reason_id = '';
 
 const CheckinLinkButton = props => {
 
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const {locationId, title, scheduleId , locationInfo , checkinTypeId , checkinReasonId } = props;
+  const {locationId, title, scheduleId , locationInfo , checkinTypeId , checkinReasonId , coordinates } = props;
   if (!locationId) return null;
+  
+  const dispatch = useDispatch();
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
+  const user_settings = useSelector(
+    state => state.selection.payload.user_settings,
+  );
+  const offlineStatus = useSelector(state => state.auth.offlineStatus);
+  
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isFeedbackModal, setIsFeedback] = useState(false);
   const [feedbackOptions, setFeedbackOptions] = useState([]);
@@ -49,9 +52,10 @@ const CheckinLinkButton = props => {
   const [originFeedbackData, setFeedback] = useState([]);
   const [checkinReason, setCheckInReason] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isCallTrigger, setCallTriger] = useState(false);
-  const [isConfirmModal , setIsConfirmModal] = useState(false);
-  const [message, setMessage] = useState('');
+  const [isCallTrigger, setCallTriger] = useState(false); 
+  const [distance, setDistance] = useState('');
+  const checkRingFenceModalRef = useRef();
+  const updateCustomerModalRef = useRef();
   
   useEffect(() => {
     initData();
@@ -143,12 +147,10 @@ const CheckinLinkButton = props => {
   };
 
   const _callCheckInTypes = async () => {
-
     setIsFeedback(true);
     setModalTitle('Check In Types');
     setModalType('checkin_type');
     setFeedbackOptions([]);
-
     LocationCheckinTypeDAO.find(features)
       .then(res => {        
         var options = [];
@@ -168,16 +170,13 @@ const CheckinLinkButton = props => {
       return checkInDetails?.location_name != undefined ? checkInDetails?.location_name : checkInDetails?.location_name?.value
     }else{
       return offlineLocation.name;
-    }
-    
+    }    
   }
 
   const _callCheckedIn = async () => {
-
     if (isLoading) {     
       return false;
     }
-
     var currentTime = getDateTime();
     var userParam = getPostParameter(currentLocation);
     let postData = {
@@ -187,8 +186,7 @@ const CheckinLinkButton = props => {
       reason_id: reason_id, //Selected reason_id, if was requested
       user_local_data: userParam.user_local_data,
     };
-
-    console.log("post data =>" , postData);
+    
     setIsLoading(true);
     if(props.onStart){
       props.onStart();      
@@ -236,11 +234,11 @@ const CheckinLinkButton = props => {
             address: offlineLocationInfo.address
           }
         }
+
         checkInDetails.current_call = {
           "checkin_time": postData.checkin_time,
           "location_name": getLocationName(checkInDetails , offlineLocationInfo , isLocationInfo)
-        };
-        console.log("checkInDetails loation =>", checkInDetails);
+        };        
         await storeJsonData('@checkin_location', checkInDetails);
                 
         checkin_type_id = '';
@@ -295,33 +293,74 @@ const CheckinLinkButton = props => {
   };
 
   const onCheckIn = async () => {
-
-    var isCheckin = await getLocalData('@checkin');
+    var isCheckin = await getLocalData('@checkin');  
+    console.log("ischeckin", isCheckin)
     if (isCheckin === '1') {
       if(props.showConfirmModal){
         props.showConfirmModal(Strings.You_Are_Currenly_Checkedin);
-      }      
-    } else {
-      const isCheckinTypes = checkFeatureIncludeParamFromSession(
-        features,
-        'checkin_types',
-      );
-      console.log('isCheckinTypes', isCheckinTypes);
-
-      if (isCheckinTypes ) {
-        if(checkinTypeId != undefined && checkinTypeId != ''){
-          checkin_type_id = checkinTypeId;
-          reason_id = checkinReasonId;
-          console.log("checkin type id & reason id", checkin_type_id , reason_id);
-          setCallTriger(true);
-        }else{
-          _callCheckInTypes();
-        }        
-      } else {
-        _callCheckedIn();
       }
+    } else {
+      if( !offlineStatus && await isInRingFence()){        
+        handleCheckIn();
+      } else if( offlineStatus && (await isInRingFence() || await haveAddressUpdate(locationId) ) ){      
+        handleCheckIn();
+      }else{
+        showRingFenceModal();
+      }      
     }
   };
+
+  const isInRingFence = async () => {
+    const response = await getDistanceBwtCurrentAndLocation(currentLocation, coordinates , user_settings , features);     
+    setDistance(response.formattedDistance);
+    return response.isInRingFence;
+  }
+
+  const handleCheckIn = () => {
+    const isCheckinTypes = features.includes('checkin_types');      
+    if (isCheckinTypes ) {
+      if(checkinTypeId != undefined && checkinTypeId != ''){
+        checkin_type_id = checkinTypeId;
+        reason_id = checkinReasonId;        
+        setCallTriger(true);
+      }else{
+        _callCheckInTypes();
+      }        
+    } else {
+      _callCheckedIn();
+    }
+  }
+
+  const showRingFenceModal = () => {
+    if(checkRingFenceModalRef.current){
+      checkRingFenceModalRef.current.showModal();
+    }
+  }
+
+  const onCheckinRingFenceModalClosed = ({type , value}) => {
+    checkRingFenceModalRef.current.hideModal();
+    if(type == Constants.actionType.ACTION_CLOSE){
+
+    }else if(type ==  Constants.actionType.ACTION_NEXT){      
+      if(updateCustomerModalRef.current){
+        updateCustomerModalRef.current.showModal();
+      }        
+    }else if(type == Constants.actionType.ACTION_APPLY){
+      handleCheckIn();
+    }
+  }
+
+  const onUpdateCustomerModalClosed = ({type , value}) => {
+    if (type == Constants.actionType.ACTION_CLOSE) {      
+      if(props.onReloadLocationData){        
+        props.onReloadLocationData()
+      }
+      if(updateCustomerModalRef.current){
+        updateCustomerModalRef.current.hideModal();
+      }      
+    }
+  }
+
   const renderSubmitButton = () => {
     if (props.renderSubmitButton) {
       return props.renderSubmitButton(onCheckIn);
@@ -340,19 +379,28 @@ const CheckinLinkButton = props => {
     );
   };
   
+
   return (
     <>
       {showFeedbackDropDownModal()}
       {renderSubmitButton()}
 
+      <CheckinRingFenceModal
+        ref={checkRingFenceModalRef}
+        distance={distance}
+        onButtonAction={onCheckinRingFenceModalClosed}
+      />
+
+      <UpdateCustomerModal 
+        ref={updateCustomerModalRef}
+        locationId={locationId}
+        title="Update"
+        onButtonAction={onUpdateCustomerModalClosed}
+      />
+      
     </>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    alignSelf: 'stretch',
-  },
-});
 
 export default CheckinLinkButton;

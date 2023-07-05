@@ -3,7 +3,6 @@
 import { View, TouchableOpacity } from 'react-native'
 import React , { useState, useEffect , useRef, forwardRef ,useImperativeHandle } from 'react'
 import BasketSyncProgress from '../components/BasketSyncProgress'
-import { getApiRequest } from '../../../../../actions/api.action'
 import { deleteRecords, handleRecords } from '../../../../../sqlite/DBHelper'
 import { offlineDBVersion, Strings } from '../../../../../constants'
 import { AppText } from '../../../../../components/common/AppText'
@@ -15,9 +14,11 @@ import { RotationAnimation } from '../../../../../components/common/RotationAnim
 import { getBasketDateTime, getDateTimeFromBasketTime } from '../../../../../helpers/formatHelpers'
 import { getBaskets } from './helper'
 import { useDispatch , useSelector} from 'react-redux'
-import { clearNotification, showNotification } from '../../../../../actions/notification.action'
 import { expireToken } from '../../../../../constants/Helper'
 import { CHANGE_SYNC_START } from '../../../../../actions/actionTypes'
+import GetRequestSyncTableData from '../../../../../DAO/sync/GetRequestSyncTableData'
+import GetRequestSyncTables from '../../../../../DAO/sync/GetRequestSyncTables'
+import AlertModal from '../../../../../components/modal/AlertModal'
 
 var gSyncedRecords = 0;
 var gBascketLists = getBaskets();
@@ -32,6 +33,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
     const [isLoading, setIsLoading] = useState(false);
     const [currentBasket, setCurrentBasket] = useState("");
     const rotationAnimationRef = useRef();
+    const alertModalRef = useRef();
     const [basketLists, setBasketLists] = useState(gBascketLists != undefined && gBascketLists.length > 0 ? basketLists : []);    
     const offlineStatus = useSelector(state => state.auth.offlineStatus);
     var lists = getBaskets();
@@ -109,62 +111,64 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 updateBasket(basket)
             }
 
-            getApiRequest(`database/sync-tables?offline_db_version=${offlineDBVersion}&sync_basket=` + basket, {}).then(async(res) => {            
-
-              if(res.status === Strings.Success){
-                var tables = res.tables;
-                console.log("All tables", tables)                
-                if(tables != null && tables.length > 0){
-                    setTotalTableCount(tables.length);
-                    const tName = tables[0];
-                    var lastSynced = await getTimeStampAndTimeZone( basket , tName);
-                    await syncTableData(tables, 0 , 0, basket , lastSynced);
+            GetRequestSyncTables.find(offlineDBVersion , basket).then(async (res) => {
+                if(res == 'offline'){
+                    cancelSync();
                 }else{
-                    await saveSyncedStatusTable(basket);                    
-                    if(isOneBasketSync){
-                        initDataFromDB();
-                        setIsLoading(false);
-                        dispatch({type: CHANGE_SYNC_START , payload: false });
-                        if(props.changeIsManual){
-                            props.changeIsManual(true)
+                    if(res.status === Strings.Success){
+                        var tables = res.tables;
+                        console.log("All tables", tables)                
+                        if(tables != null && tables.length > 0){
+                            setTotalTableCount(tables.length);
+                            const tName = tables[0];
+                            var lastSynced = await getTimeStampAndTimeZone( basket , tName);
+                            await syncTableData(tables, 0 , 0, basket , lastSynced);
+                        }else{
+                            await saveSyncedStatusTable(basket);                    
+                            if(isOneBasketSync){
+                                initDataFromDB();
+                                setIsLoading(false);
+                                dispatch({type: CHANGE_SYNC_START , payload: false });
+                                if(props.changeIsManual){
+                                    props.changeIsManual(true)
+                                }
+                            }
+                        }
+                        
+                        if(!isOneBasketSync){
+                            if(basketId + 1 < lists.length){      
+                                updateBasket(basket);
+                                syncTable(basketId + 1 , message);                        
+                            }else{                  
+    
+                                setCurrentBasket('');
+                                setIsLoading(false);
+                                dispatch({type: CHANGE_SYNC_START , payload: false });
+                                if(props.changeIsManual){
+                                    props.changeIsManual(true)
+                                }
+                                await saveSyncedStatusTable("sync_all");
+                                updateBasket(basket);
+                                if(props.updateLoading){
+                                    props.updateLoading(false);
+                                }
+                                if(message != '' && message != null){
+                                    if(alertModalRef.current){
+                                        alertModalRef.current.alert(message);
+                                    }                                    
+                                }                                
+                            }
                         }
                     }
-                }
-                
-                if(!isOneBasketSync){
-                    if(basketId + 1 < lists.length){      
-                        updateBasket(basket);
-                        syncTable(basketId + 1 , message);                        
-                    }else{                  
-
-                        setCurrentBasket('');
-                        setIsLoading(false);
-                        dispatch({type: CHANGE_SYNC_START , payload: false });
-                        if(props.changeIsManual){
-                            props.changeIsManual(true)
-                        }                                                
-                        await saveSyncedStatusTable("sync_all");
-                        updateBasket(basket);
-                        if(props.updateLoading){
-                            props.updateLoading(false)
-                        }
-                        if(message != '' && message != null){
-                            dispatch(showNotification({type:Strings.Success , message: message, buttonText: Strings.Ok , buttonAction: () => {
-                                dispatch(clearNotification());
-                            } }));
-                        }
-
-                    }
-                }
-              }
-            }).catch((e) => {
-                console.log("error" , e);
-                expireToken(dispatch, e);
+                }   
+            }).catch(e => {
+                expireToken(dispatch, e , alertModalRef );
                 dispatch({type: CHANGE_SYNC_START , payload: false });
                 if(props.changeIsManual){
                     props.changeIsManual(true)
                 }
-            })
+            });
+            
         }        
     }
 
@@ -172,46 +176,50 @@ export const BasketListContainer = forwardRef((props, ref) => {
 
         var tableName = tables[key];  
         if(tableName != undefined){
-            
-            await getApiRequest(`database/sync-table-data?offline_db_version=${offlineDBVersion}&table=${tableName}&page=${pageNumber}${lastSyncedParam}`  , {}).then( async(res) => {                          
-                
-                console.log("Table Record Length", res.records.length);
-                console.log("Page Number" , pageNumber);
-                console.log("Total Page Number", res.total_pages);
 
-                if(lastSyncedParam != null && lastSyncedParam != ""){
-                    console.log("delete previous ones");
-                    await deleteRecords(tableName, res.records);
-                }                
-                
-                await handleRecords(tableName, res.records);
-
-                setTotalRecords(res.total_records);            
-                gSyncedRecords = gSyncedRecords + res.records.length;
-                setSyncedRecords( gSyncedRecords );
-                if(pageNumber + 1 < res.total_pages){                    
-                    await syncTableData(tables , key, pageNumber + 1, basket , lastSyncedParam);
+            await GetRequestSyncTableData.find(offlineDBVersion , tableName , pageNumber , lastSyncedParam).then( async(res) => {
+                if(res == 'offline'){
+                    cancelSync();
                 }else{
-                    if(key + 1 < tables.length){
-                        const tName = tables[key + 1];
-                        const lastSynced = await getTimeStampAndTimeZone( basket , tName);
-                        setSyncedTableCount(key + 1);
-                        gSyncedRecords = 0;                    
-                        await syncTableData(tables , key + 1 , 0 , basket , lastSynced );
+                    console.log("Table Record Length", res.records.length);
+                    console.log("Page Number" , pageNumber);
+                    console.log("Total Page Number", res.total_pages);
+    
+                    if(lastSyncedParam != null && lastSyncedParam != ""){
+                        console.log("delete previous ones");
+                        await deleteRecords(tableName, res.records);
+                    }                
+                    
+                    await handleRecords(tableName, res.records);
+    
+                    setTotalRecords(res.total_records);            
+                    gSyncedRecords = gSyncedRecords + res.records.length;
+                    setSyncedRecords( gSyncedRecords );
+                    if(pageNumber + 1 < res.total_pages){                    
+                        await syncTableData(tables , key, pageNumber + 1, basket , lastSyncedParam);
                     }else{
-                        setSyncedTableCount(key + 1);
-                        setSyncedRecords(totalRecords);                        
-                        saveSyncedStatusTable(basket);
-                        if(isOneBasketSync){
-                            initDataFromDB();
-                            setIsLoading(false);
-                        }                        
+                        if(key + 1 < tables.length){
+                            const tName = tables[key + 1];
+                            const lastSynced = await getTimeStampAndTimeZone( basket , tName);
+                            setSyncedTableCount(key + 1);
+                            gSyncedRecords = 0;                    
+                            await syncTableData(tables , key + 1 , 0 , basket , lastSynced );
+                        }else{
+                            setSyncedTableCount(key + 1);
+                            setSyncedRecords(totalRecords);                        
+                            saveSyncedStatusTable(basket);
+                            if(isOneBasketSync){
+                                initDataFromDB();
+                                setIsLoading(false);
+                            }                        
+                        }
                     }
                 }
+                
             }).catch((e) => {
                 console.log("sync-table-data api error", e);                
-                expireToken(dispatch, e);
-            });
+                expireToken(dispatch, e , alertModalRef);
+            });                        
         }            
     }
 
@@ -219,6 +227,14 @@ export const BasketListContainer = forwardRef((props, ref) => {
         var time_zone = RNLocalize.getTimeZone();
         var currentTime = getBasketDateTime();
         await insertBascketLastSync(basket, currentTime, time_zone );
+    }
+
+    const cancelSync = () => {
+        setIsLoading(false);
+        dispatch({type: CHANGE_SYNC_START , payload: false });
+        if(props.onClosed){
+            props.onClosed();
+        }
     }
 
     const getTimeStampAndTimeZone = async(basket , tableName) =>{
@@ -302,6 +318,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
 
     return (
         <View style={{paddingHorizontal:10, marginTop:10}}>
+            <AlertModal ref={alertModalRef} />
             {
                 basketLists && basketLists.map((item, index) => {
                     return renderSyncData(item, index)

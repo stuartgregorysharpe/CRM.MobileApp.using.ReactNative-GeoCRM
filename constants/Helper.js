@@ -274,6 +274,9 @@ export function checkFeatureIncludeParamFromSession(features, param) {
 }
 
 export function getDistance(prelatlng, currentlatlng) {
+
+
+
   if (prelatlng.latitude === '' || prelatlng.longitude === '') {
     return 0;
   }
@@ -281,9 +284,12 @@ export function getDistance(prelatlng, currentlatlng) {
   const prevLongInRad = toRad(Number(prelatlng.longitude));
   const latInRad = toRad(currentlatlng.latitude);
   const longInRad = toRad(currentlatlng.longitude);
+  
+  const earthRadius = 6378137; // 3963 in mile
+
   return (
     // In mile
-    3963 *
+    earthRadius *
     Math.acos(
       Math.sin(prevLatInRad) * Math.sin(latInRad) +
       Math.cos(prevLatInRad) *
@@ -325,12 +331,15 @@ export function expireToken(dispatch, e , alertModalRef) {
   var message = '';
 
   if(typeof e === 'object'){
+    console.log("object error", JSON.stringify(e));
     message = 'Error. Please Contact the Support';
   }else if (e === 'expired') {
     console.log('token EXPIRED !!!!!');
     message = 'Access has expired, please login again';
   } else if (e === 'timeout') {
     message = 'Submission timed out due to limited connectivity. Please try again with stronger connectivity, or switch to Offline mode. Contact support if you have further questions.';
+  } else if (e === 'error_400' ){
+    message = 'Request 400 Error';
   }else{
     message = e;
   }

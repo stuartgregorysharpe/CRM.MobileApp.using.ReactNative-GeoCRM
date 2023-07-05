@@ -14,6 +14,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import SearchBar from '../../../components/SearchBar';
 import Colors from '../../../constants/Colors';
 import {
+  CHANGE_LOCATION_FILTERS,
   IS_CALENDAR_SELECTION,
   LOCATION_ID_CHANGED,
   SELECTED_LOCATIONS_FOR_CALENDAR,
@@ -43,6 +44,7 @@ import SelectLocationView from './partial/SelectLocationView';
 import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 import AddToCalendarModal from '../../../components/modal/add_to_calendar';
 import FilterYourSearchModal from '../../../components/modal/filter_your_search';
+import AlertModal from '../../../components/modal/AlertModal';
 
 var isEndPageLoading = false;
 var searchKey = '';
@@ -91,6 +93,7 @@ export default function LocationSearchScreen(props) {
   const locationInfoModalRef = useRef(null);
   const addToCalendarModalRef = useRef(null);
   const filterYourSearchModalRef = useRef();
+  const alertModalRef = useRef();
 
   useEffect(() => {
     initData();
@@ -218,7 +221,7 @@ export default function LocationSearchScreen(props) {
   };
 
   const loadData = async searchKey => {
-    var filterData = await getFilterData('@filter');
+    var filterData = await getFilterData('@filter');    
     LocationSearchDAO.find(
       currentLocation,
       filterData,
@@ -245,7 +248,7 @@ export default function LocationSearchScreen(props) {
         }
       })
       .catch(e => {
-        expireToken(dispatch, e);
+        expireToken(dispatch, e , alertModalRef);
       });
   };
 
@@ -278,8 +281,15 @@ export default function LocationSearchScreen(props) {
         savedShowItem = 0;
         return;
       case 'filter':
-        dispatch(getLocationFilters());                
         filterYourSearchModalRef.current.showModal();
+        getLocationFilters( (type, respnose) => {
+          if(type == 'success'){
+            dispatch({type: CHANGE_LOCATION_FILTERS, payload: respnose});
+          }else if(type == 'failed'){
+            filterYourSearchModalRef.current.hideModal();
+            expireToken(dispatch, respnose, alertModalRef);
+          }
+        });        
         return;
       case 'locationInfo':
         if (locationInfoModalRef.current) {
@@ -304,12 +314,13 @@ export default function LocationSearchScreen(props) {
 
   const openLocationInfo = async location_id => {
       animation('locationInfo');      
+      setLocationInfo(undefined);
       getLocationInfo(Number(location_id), currentLocation)
       .then(res => {        
         setLocationInfo(res);        
       })
       .catch(e => {        
-        expireToken(dispatch, e);
+        expireToken(dispatch, e , alertModalRef);
       });        
 
   };
@@ -399,6 +410,9 @@ export default function LocationSearchScreen(props) {
           page: value,
         });
       }
+    }else if(type == Constants.actionType.ACTION_REFRESH){      
+      if(value != undefined)
+        openLocationInfo(value);
     }
   };
 
@@ -420,6 +434,8 @@ export default function LocationSearchScreen(props) {
       <SafeAreaView style={{flex: 1}}>
         <Notification />
         <LoadingProgressBar/>
+
+        <AlertModal ref={alertModalRef} />
 
         <AlertDialog
           visible={isCreated}

@@ -6,29 +6,18 @@ import {
   TouchableOpacity,
   FlatList,
   BackHandler,
-  Image,
-  Dimensions,
-  Platform,  
+  Image,  
   StyleSheet
 } from 'react-native';
-import {
-  parse,
-  setWidthBreakpoints,
-} from 'react-native-extended-stylesheet-breakpoints';
 import {useDispatch, useSelector} from 'react-redux';
 import {
-  getPipelineFilters,
-  getPipelines,
+  getPipelineFilters,  
 } from '../../../actions/pipeline.action';
 import SvgIcon from '../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
-import {breakPoint} from '../../../constants/Breakpoint';
 import {Provider} from 'react-native-paper';
-import {boxShadow, grayBackground, style} from '../../../constants/Styles';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import {SLIDE_STATUS, SUB_SLIDE_STATUS} from '../../../actions/actionTypes';
-
+import {boxShadow, style} from '../../../constants/Styles';
 import SearchBar from '../../../components/SearchBar';
 import AddSalesPipeline from './AddSalesPipeline';
 import Skeleton from '../../../components/Skeleton';
@@ -104,13 +93,7 @@ export const SalesPipelineScreen = props => {
               </View>
             </TouchableOpacity>
           );
-        },
-        // tabBarStyle: {
-        //   position: 'absolute',
-        //   height: 50,
-        //   paddingBottom: Platform.OS == 'android' ? 5 : 0,
-        //   backgroundColor: Colors.whiteColor,
-        // },
+        },        
       });    
     }
 
@@ -128,9 +111,7 @@ export const SalesPipelineScreen = props => {
   }, [locationIdSpecific]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      console.log('PAGE OPEN 2');
-      //console.log("PAGE OPEN 2", props.route.params.locationInfo)
+    const unsubscribe = navigation.addListener('focus', () => {      
     });
     return unsubscribe;
   }, [navigation]);
@@ -140,7 +121,7 @@ export const SalesPipelineScreen = props => {
   }, []);
 
   useEffect(() => {
-    if (pipelineFilters !== undefined) {
+    if (pipelineFilters !== undefined) {  
       loadPipeLineData(pipelineFilters);
     }
   }, [pipelineFilters]);
@@ -250,8 +231,7 @@ export const SalesPipelineScreen = props => {
           locationFilterModalRef.current.showModal();
         }
         return;
-      case 'add_pipeline':
-        //dispatch({type: SLIDE_STATUS, payload: true});
+      case 'add_pipeline':        
         setShowItem(2);
       default:
         return;
@@ -457,7 +437,7 @@ export const SalesPipelineScreen = props => {
             contentContainerStyle={{paddingHorizontal: 7, marginTop: 0}}
             ItemSeparatorComponent={renderSeparator}
             style={{
-              marginBottom: DeviceInfo.getSystemVersion() === '11' ? 70 : 40,
+              marginBottom: DeviceInfo.getSystemVersion() === '11' ? 10 : 0,
             }}
           />
 
@@ -466,7 +446,7 @@ export const SalesPipelineScreen = props => {
               style={[
                 styles.plusButtonContainer,
                 {
-                  marginBottom: DeviceInfo.getSystemVersion() === '11' ? 70 : 40,
+                  marginBottom: DeviceInfo.getSystemVersion() === '11' ? 10 : 0,
                 },
               ]}>
               <TouchableOpacity
@@ -570,16 +550,6 @@ const styles = StyleSheet.create(
       paddingVertical: 5,
       borderRadius: 5,
     },
-
-    transitionView: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      backgroundColor: Colors.bgColor,
-      elevation: 2,
-      zIndex: 2,
-      padding: 0,
-    },
+        
   },
 );

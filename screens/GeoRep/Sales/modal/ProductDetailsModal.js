@@ -45,6 +45,7 @@ const ProductDetailsModal = React.forwardRef((props, ref) => {
                 onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR , value: 
                     {
                         product_id : product.product_id,
+                        warehouse_id : product.warehouse_id,
                         price: product.price,
                         qty: product.qty,
                         special : product.special,

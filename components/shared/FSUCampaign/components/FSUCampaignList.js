@@ -1,7 +1,8 @@
 import React from 'react';
 import {View, StyleSheet, FlatList, Text} from 'react-native';
 import {Fonts, Values} from '../../../../constants';
-import {whiteLabel} from '../../../../constants/Colors';
+import Colors , {whiteLabel} from '../../../../constants/Colors';
+import { AppText } from '../../../common/AppText';
 import FSUCampaignItem from './FSUCampaignItem';
 
 const FSUCampaignList = props => {
@@ -19,6 +20,9 @@ const FSUCampaignList = props => {
   };
   return (
     <View style={[styles.container, props.style]}>
+
+      <AppText title='No FSU to record' size="big" style={{textAlign:'center'}} color={Colors.disabledColor} />
+
       <FlatList
         data={items}
         renderItem={({item, index}) => renderItem(item, index)}

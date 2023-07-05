@@ -1,20 +1,30 @@
-import {View, Dimensions} from 'react-native';
-import React, {useState} from 'react';
+import {View, Dimensions, Platform} from 'react-native';
+import React, {useRef} from 'react';
 import ProgressBar from '../../ProgressBar';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import {whiteLabel} from '../../../../../../constants/Colors';
 import {AppText} from '../../../../../../components/common/AppText';
 import VisitCheckinItem from '../components/VisitCheckinItem';
 import Legend from '../../../../../../components/common/Legend';
+import LoadingBar from '../../../../../../components/LoadingView/loading_bar';
+import AlertModal from '../../../../../../components/modal/AlertModal';
+import { Strings } from '../../../../../../constants';
+import {useNavigation} from '@react-navigation/native';
 
 const TodayVisits = props => {
+
+  const navigation = useNavigation();
   const {today} = props;
+
+  const loadingBarRef = useRef();
+  const alertModalRef = useRef();
 
   const barTypes = [
     {color: whiteLabel().graphs.primary, name: 'Completed'},
     {color: whiteLabel().graphs.color_1, name: 'Additional'},
     {color: whiteLabel().graphs.color_3, name: 'Remaining'},
   ];
+
   const colors = [
     whiteLabel().graphs.primary,
     whiteLabel().graphs.color_1,
@@ -22,11 +32,53 @@ const TodayVisits = props => {
   ];
 
   const renderCheckin = (item, index) => {
-    return <VisitCheckinItem item={item} key={index}></VisitCheckinItem>;
+    return <VisitCheckinItem 
+      showLoadingBar={showLoadingBar}
+      hideLoadingBar={hideLoadingBar}
+      onReloadLocationData={onReloadLocationData}
+      item={item} key={index}></VisitCheckinItem>;
   };
+
+  const showLoadingBar = ()=> {
+    if(loadingBarRef.current){
+      loadingBarRef.current.showModal()
+    }
+  }
+
+  const hideLoadingBar = ()=> {
+    if(loadingBarRef.current){
+      loadingBarRef.current.hideModal()
+    }
+    showMessage(Strings.PostRequestResponse.Successfully_Checkin);
+  }
+
+  const onReloadLocationData = () => {
+    if(props.onReloadLocationData){
+      props.onReloadLocationData()
+    }
+  }
+
+  const showMessage = (message)  => {
+    const timeout = Platform.OS == 'ios' ? 500 : 0;
+    setTimeout(() => {
+      if(alertModalRef.current){
+        alertModalRef.current.alert(message);
+      }
+    }, timeout);    
+  }
 
   return (
     <View style={{flexDirection: 'column'}}>
+
+      <LoadingBar ref={loadingBarRef} />
+      <AlertModal 
+        onModalClose={(res) => {          
+          navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
+            page: 'checkin',            
+          });
+        }}
+        ref={alertModalRef} />
+
       <View
         style={{
           flexDirection: 'row',

@@ -219,15 +219,19 @@ function checkTriggerCondition(
 function checkDropdownTriggerCondition(
   condition,
   answerList,
-  valueList,
+  vList,
   formType,
 ) {
-  // console.log('checkDropdownTriggerCondition -condition', condition);
-  // console.log('checkDropdownTriggerCondition -answer', answerList);
-  // console.log('checkDropdownTriggerCondition -value', valueList);
 
-  if (formType == 'form') {
-    return checkTextTriggerCondition(condition, answerList, valueList);
+  var valueList = [];
+  if(!Array.isArray(vList) && vList != '' && vList != null){
+    valueList = [vList];
+  }else{
+    if(vList != null){
+      valueList = [...vList];
+    }else{
+      valueList = [];
+    }    
   }
 
   if (
@@ -408,7 +412,10 @@ export function validateFormQuestionData(formQuestions) {
         item.rule_compulsory === '1' &&
         (item.value === null || item.value === '' || item.value === undefined)
       ) {
-        error = Strings.Complete_Compulsory_Questions;
+        if( !(item.question_type == Constants.questionType.FORM_TYPE_FSU_CAMPAIGN && item.campaigns.length == 0) ){
+          error = Strings.Complete_Compulsory_Questions;
+        }
+        
       } else if (
         item.question_type === 'yes_no' &&
         item.isHidden == false &&
@@ -416,7 +423,7 @@ export function validateFormQuestionData(formQuestions) {
       ) {
         if (!checkYesNoValidate(item)) {
           error = Strings.Complete_Compulsory_Questions;
-        }
+        }            
       } else {
         if (
           item.isHidden == false &&

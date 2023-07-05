@@ -9,7 +9,6 @@ import {
   Linking,
 } from 'react-native';
 import {Provider} from 'react-native-paper';
-import {useSelector} from 'react-redux';
 import {style} from '../../../constants/Styles';
 import {Ticket} from './tabs/Ticket';
 import Faq from './tabs/Faq';
@@ -24,7 +23,8 @@ import { Colors } from '../../../constants';
 export default function SupportScreen(props, {screenProps}) {
 
   const navigation = props.navigation;
-  const headers = ['Ticket', 'FAQ', 'WhatsApp'];  
+
+  const headers = ['Ticket', 'FAQ', 'WhatsApp'];
   const [tabIndex, setTabIndex] = useState(1);
   const ticketRef = useRef();
   const dispatch = useDispatch();

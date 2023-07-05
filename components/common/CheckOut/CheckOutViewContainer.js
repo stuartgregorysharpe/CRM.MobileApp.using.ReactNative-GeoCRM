@@ -71,7 +71,7 @@ export default function CheckOutViewContainer(props) {
   const loadData = async () => {
     
     if(loadCompulsoryInfo){
-      console.log("checkout view container load data")
+      
       if(specificLocationId == undefined){
         specificLocationId = await getLocalData('@specific_location_id');
       }
@@ -82,15 +82,17 @@ export default function CheckOutViewContainer(props) {
           checkCompulsoryDevice(specificLocationId).then((res) => {            
             setIsDataLoading(false);
             dispatch(setCompulsoryDevice(res));
-          }).catch((e) => {
-            setIsDataLoading(false);    
+          }).catch((e) => {            
+            setIsDataLoading(false);
           })
         }else{
+          dispatch(setCompulsoryDevice(false));
           setIsDataLoading(false);
         }        
       }).catch((e) => {
         setIsDataLoading(false);
       });
+      
       loadLocationFormCompulsory();
     }    
   }
@@ -102,7 +104,7 @@ export default function CheckOutViewContainer(props) {
         if(res){
           checkConnectivity().then(async(isConnected) => {
             if(isConnected){
-              dispatch(setCompulsoryLocationField(res));                    
+              dispatch(setCompulsoryLocationField(res));
             }else{
               const flag = await haveLocationFieldPost(specificLocationId);            
               dispatch(setCompulsoryLocationField(!flag));
@@ -112,14 +114,15 @@ export default function CheckOutViewContainer(props) {
             setIsLocationFieldDataLoading(false);
           });
         }else{
-          dispatch(setCompulsoryLocationField(res));
+          dispatch(setCompulsoryLocationField(res));     
           setIsLocationFieldDataLoading(false);
         }              
       }).catch(e => {
         setIsLocationFieldDataLoading(false);
       });                       
+    }else{
+      dispatch(setCompulsoryLocationField(false));     
     }
-
   }
 
   const checkOutLocation = useCallback(() => {    
@@ -181,6 +184,10 @@ export default function CheckOutViewContainer(props) {
         checkout_time: currentTime,
         user_local_data: userParam.user_local_data,
       };
+
+      if(props.onStart) {
+        props.onStart();
+      }
 
       PostRequestDAO.find(
         specificLocationId,

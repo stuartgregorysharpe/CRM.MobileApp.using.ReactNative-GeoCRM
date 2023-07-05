@@ -7,7 +7,6 @@ import {
   Image,
   Platform,
 } from 'react-native';
-import Colors from '../../../../constants/Colors';
 import Images from '../../../../constants/Images';
 import {style} from '../../../../constants/Styles';
 import {useSelector, useDispatch} from 'react-redux';
@@ -35,8 +34,9 @@ import {generateKey} from '../../../../constants/Utils';
 import AlertModal from '../../../../components/modal/AlertModal';
 var indempotencyKey;
 
-//export default function FormQuestions(props) {
 export const FormQuestions = props => {
+
+  const navigation = props.navigation;
   const form = props.route.params.data;
   const location_id = props.route.params.location_id;
   const pageType = props.route.params.pageType;
@@ -61,6 +61,24 @@ export const FormQuestions = props => {
       isMount = false;
     };
   }, [form]);
+  
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setTimeout(() => {
+        refreshHeader();
+      }, 500);
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log("forms question screen focussed");
+      refreshHeader();      
+    });
+    return unsubscribe;
+  }, [navigation]);
+
 
   const loadFromDB = async formId => {
     _callFormQuestions();
@@ -73,6 +91,7 @@ export const FormQuestions = props => {
   };
 
   const refreshHeader = () => {
+    console.log("render header ==============> ");
     if (props.screenProps) {
       props.screenProps.setOptions({
         headerTitle: () => {
@@ -104,11 +123,11 @@ export const FormQuestions = props => {
             </TouchableOpacity>
           );
         },
-        tabBarStyle: {
-          height: 50,
-          paddingBottom: Platform.OS == 'android' ? 5 : 0,
-          backgroundColor: Colors.whiteColor,
-        },
+        // tabBarStyle: {
+        //   height: 50,
+        //   paddingBottom: Platform.OS == 'android' ? 5 : 0,
+        //   backgroundColor: Colors.whiteColor,
+        // },
       });
     }
   };
@@ -316,20 +335,24 @@ export const FormQuestions = props => {
   };
 
   const onSubmitSuccess = async (res) => {
-      const db = await getDBConnection();
-      if (db != null) await deleteFormTable(db, form.form_id);
-      clearAll();
-      const formIds = await getJsonData('@form_ids');
-      var formIdLists = [];
-      if (formIds != null) {
-        formIds.forEach(id => {
-          formIdLists.push(id);
-        });
-        formIdLists.push(form.form_id);
-        await storeJsonData('@form_ids', formIdLists);
-      } else {
-        formIdLists.push(form.form_id);
-        await storeJsonData('@form_ids', formIdLists);
+      try{
+        const db = await getDBConnection();
+        if (db != null) await deleteFormTable(db, form.form_id);
+        clearAll();
+        const formIds = await getJsonData('@form_ids');
+        var formIdLists = [];
+        if (formIds != null) {
+          formIds.forEach(id => {
+            formIdLists.push(id);
+          });
+          formIdLists.push(form.form_id);
+          await storeJsonData('@form_ids', formIdLists);
+        } else {
+          formIdLists.push(form.form_id);
+          await storeJsonData('@form_ids', formIdLists);
+        }      
+      }catch(e) {
+        console.log("error in form question clean after form post => ", e);
       }      
       onOpenFormFeedbackModal(res);
       

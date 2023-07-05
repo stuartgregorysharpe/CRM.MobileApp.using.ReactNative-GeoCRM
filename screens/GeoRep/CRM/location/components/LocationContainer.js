@@ -3,6 +3,7 @@ import React, {useState, useEffect, useMemo, useRef} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
+  CHANGE_LOCATION_FILTERS,
   CHANGE_PIN_KEY,
   CHANGE_POLYGONS,
   IS_CALENDAR_SELECTION,
@@ -14,6 +15,7 @@ import {
   getLocationInfo,
 } from '../../../../../actions/location.action';
 import AddToCalendarModal from '../../../../../components/modal/add_to_calendar';
+import AlertModal from '../../../../../components/modal/AlertModal';
 import FilterYourSearchModal from '../../../../../components/modal/filter_your_search';
 import SearchBar from '../../../../../components/SearchBar';
 import SvgIcon from '../../../../../components/SvgIcon';
@@ -62,6 +64,8 @@ const LocationContainer = props => {
   const addToCalendarModalRef = useRef(null);
   const addLeadModalRef = useRef(null);
   const locationInfoModalRef = useRef(null);
+  const alertModalRef = useRef();
+
   const isShowZoomLabel = isZoomOut || isLoading;
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
@@ -108,7 +112,7 @@ const LocationContainer = props => {
         .catch(e => {
           console.log('location map api error : ', e);
           setIsLoading(false);
-          expireToken(dispatch, e);
+          expireToken(dispatch, e, alertModalRef);
         });
     }
   };
@@ -155,10 +159,18 @@ const LocationContainer = props => {
   };
 
   const onFilterPress = () => {
-    dispatch(getLocationFilters());
     if (locationFilterModalRef && locationFilterModalRef.current) {
       locationFilterModalRef.current.showModal();
     }
+    getLocationFilters( (type, respnose) => {
+      if(type == 'success'){
+        dispatch({type: CHANGE_LOCATION_FILTERS, payload: respnose});
+      }else if(type == 'failed'){
+        locationFilterModalRef.current.hideModal();
+        expireToken(dispatch, respnose, alertModalRef);
+      }
+    });
+    
   };
 
   const onOpenMarkerModal = () => {
@@ -173,7 +185,7 @@ const LocationContainer = props => {
       })
       .catch(e => {
         console.log('locaiton pin key api error: ', e);
-        expireToken(dispatch, e);
+        expireToken(dispatch, e , alertModalRef);
       });
   };
 
@@ -199,12 +211,13 @@ const LocationContainer = props => {
       locationInfoModalRef.current.showModal();
     }
     if (currentLocation && currentLocation.latitude !== undefined) {
+      setLocationInfo(undefined);
       getLocationInfo(locationId, currentLocation)
         .then(res => {
           setLocationInfo(res);
         })
         .catch(e => {
-          expireToken(dispatch, e);
+          expireToken(dispatch, e , alertModalRef);
         });
     }
   };
@@ -272,11 +285,14 @@ const LocationContainer = props => {
     if (type == Constants.actionType.ACTION_CLOSE) {
       locationInfoModalRef.current.hideModal();      
       if (value === 'access_crm' || value == 'checkin') {
-        navigation.navigate('LocationSpecificInfo', {          
+        navigation.navigate('LocationSpecificInfo', {
           data: locationInfo,
           page: value,
         });
       }
+    }else if(type == Constants.actionType.ACTION_REFRESH){
+      if(value != undefined)
+        openLocationInfoDetails(Number(value));      
     }
   }
 
@@ -293,6 +309,7 @@ const LocationContainer = props => {
   return (
     <View style={[styles.container, props.style]}>
       <LocationWatcher />
+      <AlertModal ref={alertModalRef} />
       <SearchBar
         isFilter
         onSearchBoxPress={onPressSearch}

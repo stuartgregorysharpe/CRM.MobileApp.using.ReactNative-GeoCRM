@@ -6,16 +6,16 @@ import {whiteLabel} from '../../constants/Colors';
 import {style as commonStyle} from '../../constants/Styles';
 
 const BaseForm = props => {
-  const {item} = props;
+  const { item , questionButtonType } = props;
   if (!item) return null;
   const onItemAction = type => {
     if (props.onItemAction) {
       props.onItemAction({type, item});
     }
   };
-  const isQuesionAnswered = item.value != null && item.value != '';
-  const isCompulsory =
-    !isQuesionAnswered && item && item.rule_compulsory === '1';
+  const isQuesionAnswered = item.value != null && item.value != '';  
+  const isDisabled = questionButtonType == Constants.questionButtonType.QUESTION_BUTTON_DISABLED;
+  const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1' && !isDisabled;  
 
   const isShowInfoIcon =
     item.guide_info !== undefined && item.guide_info.length != 0;
@@ -24,7 +24,7 @@ const BaseForm = props => {
       style={[
         styles.container,
         commonStyle.card,
-        isCompulsory && commonStyle.compulsoryStyle,
+        isCompulsory && commonStyle.compulsoryStyle,      
         {marginHorizontal: 5, marginVertical: 3, flexDirection: 'column'},
         props.style,
       ]}>
