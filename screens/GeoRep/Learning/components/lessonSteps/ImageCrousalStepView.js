@@ -39,14 +39,14 @@ const ImageCarousel = ({ value }) => {
             </ScrollView>
             <View style={styles.pagination}>
                 {value.map((_, index) => (
-                    currentIndex === index ? <Icon name="circle" size={15} color="#0000FF" /> : <Icon name="controller-record" size={15} color="#0000FF" />
+                    currentIndex === index ? <Icon name="controller-record" style={styles.circle} size={12} color="#0000FF" /> : <Icon style={styles.circle} name="controller-record" size={12} color="#807e7e" />
                 ))}
             </View>
             <TouchableOpacity style={styles.prevButton} onPress={() => scrollToIndex(Math.max(currentIndex - 1, 0))}>
-                <Icon name="chevron-thin-left" size={30} color="#0000FF" />
+                <Icon name="chevron-thin-left" size={20} color="#0000FF" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.nextButton} onPress={() => scrollToIndex(Math.min(currentIndex + 1, value.length - 1))}>
-                <Icon name="chevron-thin-right" size={30} color="#0000FF" />
+                <Icon name="chevron-thin-right" size={20} color="#0000FF" />
             </TouchableOpacity>
         </View>
     );
@@ -63,18 +63,21 @@ const styles = StyleSheet.create({
     pagination: {
         flexDirection: 'row',
         position: 'absolute',
-        bottom: 10,
+        bottom: 5,
     },
     prevButton: {
         position: 'absolute',
-        left: 20,
+        left: 3,
         bottom: '50%',
     },
     nextButton: {
         position: 'absolute',
-        right: 20,
+        right: 3,
         bottom: '50%',
     },
+    circle: {
+        marginRight: 5
+    }
 });
 
 export default ImageCarousel;

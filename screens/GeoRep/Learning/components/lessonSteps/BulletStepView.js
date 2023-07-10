@@ -27,12 +27,12 @@ const styles = StyleSheet.create({
     },
     text: {
         flex: 1,
-        fontWeight: '900',
-        fontSize: 16,
+        fontSize: 15,
         color: 'black',
         fontFamily: (Platform.OS === 'ios') ? "Gilroy-SemiBold" : "Radomir Tinkov - Gilroy-SemiBold",
     },
     icon: {
-        marginLeft: 10, // or however much space you want between the text and the icon
+        marginLeft: 10,
+        marginRight: 5
     },
 });

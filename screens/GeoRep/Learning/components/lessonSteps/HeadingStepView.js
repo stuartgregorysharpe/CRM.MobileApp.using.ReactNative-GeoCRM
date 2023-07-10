@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 2,
     flex: 1,
     fontWeight: '900',
-    fontSize: 27,
+    fontSize: 25,
     color: 'black',
     fontFamily: (Platform.OS === 'ios') ? "Gilroy-SemiBold" : "Radomir Tinkov - Gilroy-SemiBold",
   }

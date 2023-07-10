@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flexDirection: 'row',
-        marginVertical: 2,
+        marginVertical: 0,
         alignItems: 'center',
     },
     textCourse: {

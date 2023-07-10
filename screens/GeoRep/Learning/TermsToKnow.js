@@ -25,10 +25,9 @@ const TermsToKnow = ({ route, screenProps }) => {
                   style={styles.imageStyle}
                   source={Images.backIcon}
                 />
-                <Text style={style.headerTitle}>Back</Text>
+                <Text style={style.headerTitle}>Term To Know</Text>
               </View>
             </TouchableOpacity>
-            <Text style={style.headerTitle}>     Term To Know</Text>
           </View>
         ),
       });
