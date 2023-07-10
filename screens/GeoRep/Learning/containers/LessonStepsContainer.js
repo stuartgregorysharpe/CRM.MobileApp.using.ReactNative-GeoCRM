@@ -14,7 +14,9 @@ import CheckBoxStepView from '../components/lessonSteps/CheckBoxStepView.js';
 import BulletStepView from '../components/lessonSteps/BulletStepView.js';
 import GuidanceStepView from '../components/lessonSteps/GuidanceStepView.js';
 import ImageShowCaseStepView from '../components/lessonSteps/ImageShowCaseStepView.js';
+import ImageGridStepView from '../components/lessonSteps/ImageGridStepView.js';
 import ImageCrousalStepView from '../components/lessonSteps/ImageCrousalStepView.js';
+
 
 
 const LessonStepsContainer = props => {
@@ -97,15 +99,16 @@ const LessonStepsContainer = props => {
             </View>
             {/* start content */}
 
-            {lessonStepData?.components?.map((tp, idx) => {
-                if (tp?.component_type === "paragraph") {
-                    return <ParagraphStepView value={tp?.value} />
-                }
-            })}
 
             {lessonStepData?.components?.map((tp, idx) => {
                 if (tp?.component_type === "heading") {
                     return <HeadingStepView value={tp?.value} />
+                }
+            })}
+
+            {lessonStepData?.components?.map((tp, idx) => {
+                if (tp?.component_type === "paragraph") {
+                    return <ParagraphStepView value={tp?.value} />
                 }
             })}
 
@@ -132,6 +135,18 @@ const LessonStepsContainer = props => {
                     return <ImageShowCaseStepView value={tp?.value} />
                 }
             })}
+
+            {lessonStepData?.components?.map((tp, idx) => {
+                if (tp?.component_type === "image_grid") {
+                    return <ImageGridStepView value={tp?.value} />
+                }
+            })}
+
+            {/* {lessonStepData?.components?.map((tp, idx) => {
+                if (tp?.component_type === "divide_card") {
+                    return <View style={{backgroundColor: "black", height: 2}}></View>
+                }
+            })} */}
 
             {lessonStepData?.components?.map((tp, idx) => {
                 if (tp?.component_type === "image_carousel") {
@@ -187,7 +202,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flexDirection: 'row',
-        marginVertical: 5,
+        marginVertical: 2,
         alignItems: 'center',
     },
     textCourse: {

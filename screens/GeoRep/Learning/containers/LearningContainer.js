@@ -16,6 +16,7 @@ const LearningContainer = props => {
       getLearningDashboard()
     }, []);
     const showLoadingBar = () => {
+        print("Show Loading Bar")
         if(loadingBarRef.current)
         loadingBarRef.current.showModal();
     }
@@ -27,10 +28,12 @@ const LearningContainer = props => {
     const getLearningDashboard = () =>{
         showLoadingBar();
         getApiRequest('v2/user/dashboard', {}, true).then(response =>{
+            console.log("Learning Dashboard API", response)
             setCourseList(response.assigned_courses)
             setUserSummary(response.user_summary)
             hideLoadingBar();
         }).catch(error =>{
+            console.log("Learning Dashboard API", error)
             hideLoadingBar();
             expireToken(dispatch, error , alertModalRef); 
         })

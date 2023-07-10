@@ -3,7 +3,7 @@ import { View, Text, Platform, StyleSheet } from "react-native";
 import SvgIcon from "../../../../../components/SvgIcon";
 
 const StepView = ({ value, prefix_icon, suffix_icon, background_color }) => (
-    <View style = {{ borderRadius: 10, paddingTop:7, paddingRight: 5, backgroundColor: background_color, flexDirection: 'column', marginVertical: 5,}}>
+    <View style = {{ borderRadius: 10, paddingTop:10, paddingLeft:1, paddingRight: 10, backgroundColor: background_color, flexDirection: 'column', marginVertical: 5,}}>
         <View style={styles.item}>
             <SvgIcon icon={prefix_icon} width="30" height="30" style={styles.icon} />
             <Text style={styles.text}>{value}</Text>

@@ -22,7 +22,7 @@ const CourseDashboardScreen = ({ route, screenProps }) => {
                 style={styles.imageStyle}
                 source={Images.backIcon}
               />
-              <Text style={style.headerTitle}>CourseDashboard</Text>
+              <Text style={style.headerTitle}>Course Dashboard</Text>
             </View>
           </TouchableOpacity>
         ),

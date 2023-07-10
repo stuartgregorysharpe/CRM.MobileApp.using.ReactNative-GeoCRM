@@ -9,7 +9,7 @@ const CourseCardItemView = props => {
         <View>
             <View style={{
                 flexDirection: 'row',
-                marginVertical: 5,
+                marginVertical: 3,
                 alignItems: 'center',
             }}>
 
@@ -46,13 +46,13 @@ const CourseCardItemView = props => {
 
             </View>
             <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-                <View style={{ flexDirection: 'row', marginVertical: 5 }}>
+                <View style={{ flexDirection: 'row', marginVertical: 4 }}>
                     <ProgressIndicatorView total={parseInt(item.progress.total)} completed={parseInt(item.progress.completed)}
                         style={{
                             flexDirection: 'row',
-                            marginVertical: 5,
+                            marginVertical: 0,
                             flex: 1,
-                            height: 5,
+                            height: 4,
                         }} />
                 </View>
             </View>

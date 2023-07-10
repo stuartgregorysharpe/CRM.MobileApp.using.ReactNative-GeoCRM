@@ -1,18 +1,35 @@
-import React from "react";
-import { View, Text, Platform, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Platform, StyleSheet, TouchableOpacity } from "react-native";
 import SvgIcon from "../../../../../components/SvgIcon";
 
-const StepView = ({ value }) => (
-    <View style={styles.container}>
-        {value?.map((tp, idx) => (
-            <View style={styles.item} key={idx}>
-                <Text style={styles.text}>{tp}</Text>
-                { idx === 1 && <SvgIcon icon = "CheckSelectedBox" width = "20" height="20" style={styles.icon} />}
-                { idx === 0 && <SvgIcon icon = "CheckBox" width = "25" height="25" style={styles.icon} />}
-            </View>
-        ))}
-    </View>
-);
+const StepView = ({ value }) => {
+    const [checked, setChecked] = useState(Array(value.length).fill(false));
+
+    const handlePress = (index) => {
+        const newChecked = Array(value.length).fill(false);
+        // only allow checking an item, disallow unchecking
+        if (!checked[index]) newChecked[index] = true;
+        setChecked(newChecked);
+    };
+
+    return (
+        <View style={styles.container}>
+            {value?.map((tp, idx) => (
+                <TouchableOpacity onPress={() => handlePress(idx)} key={idx}>
+                    <View style={styles.item}>
+                        <Text style={styles.text}>{tp}</Text>
+                        <SvgIcon 
+                            icon={checked[idx] ? "CheckBox" : "CheckSelectedBox"} 
+                            width={checked[idx] ? "25" : "20"} 
+                            height={checked[idx] ? "25" : "20"} 
+                            style={styles.icon} 
+                        />
+                    </View>
+                </TouchableOpacity>
+            ))}
+        </View>
+    );
+}
 
 export default StepView;
 
@@ -34,6 +51,5 @@ const styles = StyleSheet.create({
         fontFamily: (Platform.OS === 'ios') ? "Gilroy-SemiBold" : "Radomir Tinkov - Gilroy-SemiBold",
     },
     icon: {
-        marginLeft: 10, // or however much space you want between the text and the icon
     },
 });

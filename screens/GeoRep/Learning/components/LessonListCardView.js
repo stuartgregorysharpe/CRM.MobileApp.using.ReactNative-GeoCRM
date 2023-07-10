@@ -86,11 +86,11 @@ const LessonListCardView = props => {
                         }}>
                             <LessonCardItemView item={tp} idx={idx} />
                         </TouchableOpacity>
-                        {idx < lesson_list.length - 1 && <View style={{ backgroundColor: '#EAEDF2', height: 2, marginVertical: 5 }} />}
+                        {idx < lesson_list.length - 1 && <View style={{ backgroundColor: '#EAEDF2', height: 2, marginVertical: 0 }} />}
                     </View>
                 })
             }
-            <View style={{ backgroundColor: '#EAEDF2', height: 2, marginVertical: 5 }} />
+            <View style={{ backgroundColor: '#EAEDF2', height: 2, marginVertical: 0 }} />
             <QuizCardItemView item={quiz} />
 
         </View>

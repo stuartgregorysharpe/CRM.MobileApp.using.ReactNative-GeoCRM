@@ -1,0 +1,80 @@
+import React, { useRef, useState } from 'react';
+import { View, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/Entypo';
+
+const ImageCarousel = ({ value }) => {
+    const { width } = Dimensions.get('window');
+    const height = width * 0.6;
+
+    const scrollViewRef = useRef();
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const handleScroll = (event) => {
+        const newIndex = Math.round(event.nativeEvent.contentOffset.x / width);
+        setCurrentIndex(newIndex);
+    };
+
+    const scrollToIndex = (index) => {
+        scrollViewRef.current.scrollTo({ x: index * width, animated: true });
+    };
+
+    return (
+        <View style={styles.container}>
+            <ScrollView
+                ref={scrollViewRef}
+                horizontal={true}
+                pagingEnabled={true}
+                showsHorizontalScrollIndicator={false}
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
+            >
+                {value.map((image, index) => (
+                    <Image
+                        key={index}
+                        source={{ uri: image }}
+                        style={{ width, height }}
+                        resizeMode="cover"
+                    />
+                ))}
+            </ScrollView>
+            <View style={styles.pagination}>
+                {value.map((_, index) => (
+                    currentIndex === index ? <Icon name="circle" size={15} color="#0000FF" /> : <Icon name="controller-record" size={15} color="#0000FF" />
+                ))}
+            </View>
+            <TouchableOpacity style={styles.prevButton} onPress={() => scrollToIndex(Math.max(currentIndex - 1, 0))}>
+                <Icon name="chevron-thin-left" size={30} color="#0000FF" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.nextButton} onPress={() => scrollToIndex(Math.min(currentIndex + 1, value.length - 1))}>
+                <Icon name="chevron-thin-right" size={30} color="#0000FF" />
+            </TouchableOpacity>
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        marginVertical: 5,
+        padding: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    pagination: {
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 10,
+    },
+    prevButton: {
+        position: 'absolute',
+        left: 20,
+        bottom: '50%',
+    },
+    nextButton: {
+        position: 'absolute',
+        right: 20,
+        bottom: '50%',
+    },
+});
+
+export default ImageCarousel;
