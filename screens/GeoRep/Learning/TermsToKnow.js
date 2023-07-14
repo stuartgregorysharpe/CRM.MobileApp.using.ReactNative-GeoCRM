@@ -25,7 +25,7 @@ const TermsToKnow = ({ route, screenProps }) => {
                   style={styles.imageStyle}
                   source={Images.backIcon}
                 />
-                <Text style={style.headerTitle}>Term To Know</Text>
+                <Text style={style.headerTitle}>Terms To Know</Text>
               </View>
             </TouchableOpacity>
           </View>

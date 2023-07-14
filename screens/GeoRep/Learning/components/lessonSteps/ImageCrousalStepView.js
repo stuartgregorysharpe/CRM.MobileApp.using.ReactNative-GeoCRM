@@ -56,7 +56,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginVertical: 5,
-        padding: 2,
+        padding: 25,
+        paddingTop: 0,
         justifyContent: 'center',
         alignItems: 'center',
     },

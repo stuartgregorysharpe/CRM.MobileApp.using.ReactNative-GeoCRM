@@ -17,19 +17,17 @@ import ImageShowCaseStepView from '../components/lessonSteps/ImageShowCaseStepVi
 import ImageGridStepView from '../components/lessonSteps/ImageGridStepView.js';
 import ImageCrousalStepView from '../components/lessonSteps/ImageCrousalStepView.js';
 
-
-
 const LessonStepsContainer = props => {
 
     const loadingBarRef = useRef(null);
     const alertModalRef = useRef(null);
-    const [lessonStepData, setlessonStepData] = useState(null);  // initialize with null
-    const { course_id } = props
-
+    const [lessonStepData, setLessonStepData] = useState(null);
+    const { course_id } = props;
     const navigation = useNavigation();
+    const [step, setstep] = useState(1);
 
     useEffect(() => {
-        handlecourse(1);  // fetch data when component mounts
+        handlecourse(1);
     }, []);
 
     const showLoadingBar = () => {
@@ -41,8 +39,6 @@ const LessonStepsContainer = props => {
         if (loadingBarRef.current)
             loadingBarRef.current.hideModal();
     }
-
-    const [step, setstep] = useState(1);
 
     const handlestep = (string) => {
         if (step >= 4 && string === "plus") {
@@ -69,8 +65,8 @@ const LessonStepsContainer = props => {
         showLoadingBar();
         try {
             const response = await getApiRequest('v2/user/lesson-item-details', { type: "lesson_step", item_id: item_id }, true);
-            console.log("LessonSteps :: ", response);
-            setlessonStepData(response);
+            setLessonStepData(response);
+            hideLoadingBar();
         } catch (error) {
             expireToken(dispatch, error, alertModalRef);
         } finally {
@@ -78,9 +74,7 @@ const LessonStepsContainer = props => {
         }
     }
 
-    console.log(lessonStepData?.course_name, "components");
-
-    if (!lessonStepData) { return null; }  // if data is not loaded yet, return null or a loading indicator
+    if (!lessonStepData) { return null; }
 
     return (
         <ScrollView
@@ -88,103 +82,87 @@ const LessonStepsContainer = props => {
                 padding: 15
             }}
         >
-            <View style={styles.container}>
-                <Text style={styles.textCourse}>{lessonStepData?.course_name}</Text>
-            </View>
-            <View style={styles.container}>
-                <Text style={styles.textOrder}>Lesson {lessonStepData?.lesson_order}: {lessonStepData?.lesson_name}</Text>
-            </View>
-            <View style={styles.container}>
-                <Text style={styles.textTopic}>{lessonStepData?.topic_name}</Text>
-            </View>
-            {/* start content */}
+            {
+                lessonStepData?.components.map((tempComponent, comId) => {
+                    return (
+                        <View style={styles.card}>
+                            {
+                                comId == 0 && <View>
+                                    <View style={styles.container}>
+                                        <Text style={styles.textCourse}>{lessonStepData?.course_name}</Text>
+                                    </View>
+                                    <View style={styles.container}>
+                                        <Text style={styles.textOrder}>Lesson {lessonStepData?.lesson_order}: {lessonStepData?.lesson_name}</Text>
+                                    </View>
+                                    <View style={styles.container}>
+                                        <Text style={styles.textTopic}>{lessonStepData?.topic_name}</Text>
+                                    </View>
+                                </View>
+                            }
 
+                            {tempComponent?.map((tp, idx) => {
+                                if (tp?.component_type === "guidance") {
+                                    return <GuidanceStepView value={tp?.value} prefix_icon={tp.prefix_icon} suffix_icon={tp?.suffix_icon} background_color={tp?.background_color} />
+                                }
+                                if (tp?.component_type === "heading") {
+                                    return <HeadingStepView value={tp?.value} />
+                                }
+                                if (tp?.component_type === "paragraph") {
+                                    return <ParagraphStepView value={tp?.value} />
+                                }
+                                if (tp?.component_type === "checkbox") {
+                                    return <CheckBoxStepView value={tp?.value} />
+                                }
+                                if (tp?.component_type === "bullet_points") {
+                                    return <BulletStepView value={tp?.value} icon={tp.bullet_icon} />
+                                }
+                                if (tp?.component_type === "image_showcase") {
+                                    return <ImageShowCaseStepView value={tp?.value} />
+                                }
+                                if (tp?.component_type === "image_grid") {
+                                    return <ImageGridStepView value={tp?.value} />
+                                }
+                                if (tp?.component_type === "image_carousel") {
+                                    return <ImageCrousalStepView value={tp?.value} />
+                                }
+                            })}
 
-            {lessonStepData?.components?.map((tp, idx) => {
-                if (tp?.component_type === "heading") {
-                    return <HeadingStepView value={tp?.value} />
-                }
-            })}
+                            {
+                                comId == lessonStepData?.components.length - 1 && <View>
+                                    <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                                        <View style={{ flexDirection: 'row', marginVertical: 5 }}>
+                                            <ProgressIndicatorView total={parseInt(lessonStepData?.progress?.total) - 1} completed={parseInt(lessonStepData?.progress?.completed)}
+                                                style={{
+                                                    flexDirection: 'row',
+                                                    marginVertical: 5,
+                                                    flex: 1,
+                                                    height: 5,
+                                                }} />
+                                        </View>
+                                    </View>
 
-            {lessonStepData?.components?.map((tp, idx) => {
-                if (tp?.component_type === "paragraph") {
-                    return <ParagraphStepView value={tp?.value} />
-                }
-            })}
+                                    <View style={{ flexDirection: 'row' }}>
+                                        {
+                                            step > 1 && <BackButton
+                                                title="Back"
+                                                style={{ flex: 1, marginHorizontal: 10 }}
+                                                onSubmit={() => handlestep("minus")}
+                                            />
+                                        }
+                                        <SubmitButton
+                                            style={{ flex: 1, marginHorizontal: 10 }}
+                                            title="Next"
+                                            onSubmit={() => handlestep('plus')}
+                                        />
+                                    </View>
+                                    <View style={styles.height30}></View>
+                                </View>
+                            }
+                        </View>
+                    )
+                })
 
-            {lessonStepData?.components?.map((tp, idx) => {
-                if (tp?.component_type === "checkbox") {
-                    return <CheckBoxStepView value={tp?.value} />
-                }
-            })}
-
-            {lessonStepData?.components?.map((tp, idx) => {
-                if (tp?.component_type === "bullet_points") {
-                    return <BulletStepView value={tp?.value} icon={tp.bullet_icon} />
-                }
-            })}
-
-            {lessonStepData?.components?.map((tp, idx) => {
-                if (tp?.component_type === "guidance") {
-                    return <GuidanceStepView value={tp?.value} prefix_icon={tp.prefix_icon} suffix_icon={tp?.suffix_icon} background_color={tp?.background_color} />
-                }
-            })}
-
-            {lessonStepData?.components?.map((tp, idx) => {
-                if (tp?.component_type === "image_showcase") {
-                    return <ImageShowCaseStepView value={tp?.value} />
-                }
-            })}
-
-            {lessonStepData?.components?.map((tp, idx) => {
-                if (tp?.component_type === "image_grid") {
-                    return <ImageGridStepView value={tp?.value} />
-                }
-            })}
-
-            {/* {lessonStepData?.components?.map((tp, idx) => {
-                if (tp?.component_type === "divide_card") {
-                    return <View style={{backgroundColor: "black", height: 2}}></View>
-                }
-            })} */}
-
-            {lessonStepData?.components?.map((tp, idx) => {
-                if (tp?.component_type === "image_carousel") {
-                    return <ImageCrousalStepView value={tp?.value} />
-                }
-            })}
-
-
-            {/* end content */}
-
-            <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-                <View style={{ flexDirection: 'row', marginVertical: 5 }}>
-                    <ProgressIndicatorView total={parseInt(lessonStepData?.progress?.total)} completed={parseInt(lessonStepData?.progress?.completed)}
-                        style={{
-                            flexDirection: 'row',
-                            marginVertical: 5,
-                            flex: 1,
-                            height: 5,
-                        }} />
-                </View>
-            </View>
-
-            <View style={{ flexDirection: 'row' }}>
-                {
-                    step > 1 && <BackButton
-                        title="Back"
-                        style={{ flex: 1, marginHorizontal: 10 }}
-                        onSubmit={() => handlestep("minus")}
-                    />
-                }
-                <SubmitButton
-                    style={{ flex: 1, marginHorizontal: 10 }}
-                    title="Next"
-                    onSubmit={() => handlestep('plus')}
-                />
-            </View>
-
-            <View style={styles.height30}></View>
+            }
             <LoadingBar ref={loadingBarRef} />
             <AlertModal ref={alertModalRef} />
         </ScrollView>
@@ -194,6 +172,13 @@ const LessonStepsContainer = props => {
 export default LessonStepsContainer;
 
 const styles = StyleSheet.create({
+    card: {
+        padding: 10,
+        marginBottom: 10,
+        backgroundColor: "white",
+        borderRadius: 10,
+        shadowColor: "gray",
+    },
     height10: {
         height: 10
     },
@@ -230,3 +215,4 @@ const styles = StyleSheet.create({
         fontFamily: (Platform.OS === 'ios') ? "Gilroy-SemiBold" : "Radomir Tinkov - Gilroy-SemiBold",
     },
 });
+
