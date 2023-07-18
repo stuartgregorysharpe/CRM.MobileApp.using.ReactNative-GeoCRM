@@ -38,6 +38,7 @@ import LearningScreen from '../screens/GeoRep/Learning/Learning';
 import CourseDashboardScreen from '../screens/GeoRep/Learning/CourseDashboard';
 import TermsToKnowScreen from '../screens/GeoRep/Learning/TermsToKnow';
 import LessonStepsScreen from '../screens/GeoRep/Learning/LessonSteps';
+import QuizStepsScreen from '../screens/GeoRep/Learning/QuizSteps.js';
 
 const Stack = createNativeStackNavigator();
 
@@ -208,6 +209,11 @@ export default function RepMoreScreen(props) {
       <Stack.Screen name = "LessonSteps" options={{header: ()=>null}}>
         {
           props => <LessonStepsScreen {...props} screenProps={navigation}/>
+        }
+      </Stack.Screen>
+      <Stack.Screen name = "QuizSteps" options={{header: ()=>null}}>
+        {
+          props => <QuizStepsScreen {...props} screenProps={navigation}/>
         }
       </Stack.Screen>
     </Stack.Navigator>

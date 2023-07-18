@@ -91,7 +91,16 @@ const LessonListCardView = props => {
                 })
             }
             <View style={{ backgroundColor: '#EAEDF2', height: 2, marginVertical: 0 }} />
+            <TouchableOpacity onPress={
+                () => {
+                    navigation.navigate("QuizSteps", {
+                        "quiz_id": quiz?.quiz_id,
+                        "course_id": course_id
+                    })
+                }
+            }>
             <QuizCardItemView item={quiz} />
+            </TouchableOpacity>
 
         </View>
     );
