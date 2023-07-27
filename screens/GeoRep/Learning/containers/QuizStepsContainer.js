@@ -17,6 +17,14 @@ import ImageShowCaseStepView from '../components/lessonSteps/ImageShowCaseStepVi
 import ImageGridStepView from '../components/lessonSteps/ImageGridStepView.js';
 import ImageCrousalStepView from '../components/lessonSteps/ImageCrousalStepView.js';
 
+import TrueFalseStepView from '../components/quizSteps/TrueFalseStepView.js'
+import MultiSelectStepView from '../components/quizSteps/MultiSelectStepView.js'
+import TextStepView from '../components/quizSteps/TextStepView.js'
+import MultipleStepView from '../components/quizSteps/MultipleStepView.js'
+import SelectImageStepView from '../components/quizSteps/SelectImageStepView.js'
+
+
+
 const LessonStepsContainer = props => {
 
     const loadingBarRef = useRef(null);
@@ -122,6 +130,21 @@ const LessonStepsContainer = props => {
                     }
                     if (tp?.component_type === "image_carousel") {
                         return <ImageCrousalStepView value={tp?.value} />
+                    }
+                    if(tp?.component_type === "true_false") {
+                        return <TrueFalseStepView label = {tp?.label} />
+                    }
+                    if(tp?.component_type === "multi_select") {
+                        return <MultiSelectStepView label = {tp?.label} options = {tp?.options} />
+                    }
+                    if(tp?.component_type === "text") {
+                        return <TextStepView label = {tp?.label} />
+                    }
+                    if(tp?.component_type === "multiple") {
+                        return <MultipleStepView label = {tp?.label} options = {tp?.options} />
+                    }
+                    if(tp?.component_type === "select_image"){
+                        return <SelectImageStepView label = {tp?.label} options = {tp?.options} />
                     }
                 })}
 
