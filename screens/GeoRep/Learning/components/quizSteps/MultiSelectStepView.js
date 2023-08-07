@@ -2,20 +2,27 @@ import React, { useState } from "react";
 import { View, Text, Platform, StyleSheet, TouchableOpacity } from "react-native";
 import SvgIcon from "../../../../../components/SvgIcon";
 
-const StepView = ({ label, options }) => {
+const StepView = ({ label, options, correct_answer }) => {
     const [checkedStates, setCheckedStates] = useState(Array(label.length).fill(false));
+    const [temp, setTemp] =useState([]);
 
-    const handlePress = (index) => {
+    const handlePress = (index,tp) => {
         const newCheckedStates = [...checkedStates];
         newCheckedStates[index] = !newCheckedStates[index];
         setCheckedStates(newCheckedStates);
+
+        let newTemp = [...temp];
+        newTemp.push(tp);
+        setTemp(newTemp);
+        console.log(newTemp, "newTemp")
+        correct_answer(newTemp);
     };
 
     return (
         <View style={styles.container}>
             <Text style={styles.text_label}>{label}</Text>
             {options?.map((tp, idx) => (
-                <TouchableOpacity onPress={() => handlePress(idx)} key={idx}>
+                <TouchableOpacity onPress={() => handlePress(idx, tp)} key={idx}>
                     <View style={styles.item}>
                         <SvgIcon
                             icon={checkedStates[idx] ? "CheckBox" : "CheckSelectedBox"}

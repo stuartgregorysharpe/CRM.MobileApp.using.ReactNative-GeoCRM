@@ -42,8 +42,9 @@ const LessonStepsContainer = props => {
 
     const handlestep = (string) => {
         if (step >= 4 && string === "plus") {
-            navigation.navigate("CourseDashboard", { "course_id": course_id });
-            console.log("outWS");
+            // navigation.navigate("CourseDashboard", { "course_id": course_id });
+            navigation.navigate("LessonCheckStep", { "course_id": course_id });
+            return;
         }
         if (string === "plus") {
             setstep(prevstep => {
@@ -131,7 +132,7 @@ const LessonStepsContainer = props => {
                                 comId == lessonStepData?.components.length - 1 && <View>
                                     <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                                         <View style={{ flexDirection: 'row', marginVertical: 5 }}>
-                                            <ProgressIndicatorView total={parseInt(lessonStepData?.progress?.total) - 1} completed={parseInt(lessonStepData?.progress?.completed)}
+                                            <ProgressIndicatorView total={parseInt(lessonStepData?.progress?.total)} completed={parseInt(lessonStepData?.progress?.completed)}
                                                 style={{
                                                     flexDirection: 'row',
                                                     marginVertical: 5,

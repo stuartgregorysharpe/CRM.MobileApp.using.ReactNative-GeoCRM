@@ -1591,6 +1591,21 @@ const CheckBox = `<svg id="check_circle_black_24dp_3_" data-name="check_circle_b
 <path id="Path_4190" data-name="Path 4190" d="M35.948,2A33.948,33.948,0,1,0,69.9,35.948,33.96,33.96,0,0,0,35.948,2Zm-6.79,50.922L12.184,35.948l4.787-4.787L29.158,43.315,54.925,17.548l4.787,4.821Z" transform="translate(4.79 4.79)" fill="#133c8b"/>
 </svg>`;
 
+const successAnswerIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+<g id="Group_5189" data-name="Group 5189" transform="translate(-465 -979)">
+  <circle id="Ellipse_156" data-name="Ellipse 156" cx="120" cy="120" r="120" transform="translate(465 979)" fill="#dc143c"/>
+  <path id="warning_FILL0_wght400_GRAD0_opsz48" d="M2,129.226,74.5,4,147,129.226Zm17.136-9.886H129.862L74.5,23.772Zm56.022-9.392a4.79,4.79,0,1,0-3.543-1.4A4.8,4.8,0,0,0,75.158,109.947Zm-4.943-18.29H80.1V54.749H70.215ZM74.5,71.556Z" transform="translate(511 1025)" fill="#fff"/>
+</g>
+</svg>`;
+const failAnswerIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+<g id="Group_5192" data-name="Group 5192" transform="translate(-465 -899)">
+  <g id="Group_5189" data-name="Group 5189" transform="translate(0 -80)">
+    <circle id="Ellipse_156" data-name="Ellipse 156" cx="120" cy="120" r="120" transform="translate(465 979)" fill="#133c8b"/>
+  </g>
+  <path id="verified_FILL0_wght400_GRAD0_opsz48" d="M53.618,144.7,40.8,122.767l-25.472-5.229,2.868-24.8L2,73.848,18.194,55.124l-2.868-24.8L40.8,25.1,53.618,3l22.6,10.459L98.826,3l12.989,22.1,25.3,5.229-2.868,24.8,16.194,18.724L134.249,92.741l2.868,24.8-25.3,5.229L98.826,144.7l-22.6-10.458Zm4.555-13.326,18.049-7.591,18.555,7.591,11.3-16.869,19.736-5.061-2.024-20.074,13.664-15.519L123.791,57.992l2.024-20.074-19.736-4.723L94.44,16.326,76.222,23.917,57.666,16.326l-11.3,16.869L26.628,37.918l2.024,20.074L14.989,73.848,28.652,89.367l-2.024,20.411L46.364,114.5ZM76.222,73.848ZM68.968,96.283,107.26,58.329l-7.591-6.916-30.7,30.363-16.025-16.7-7.76,7.591Z" transform="translate(508.638 945.518)" fill="#fff"/>
+</g>
+</svg>`;
+
 const svgMap = {
   Round_Btn_Default_Dark: Round_Btn_Default_Dark,
   Round_Btn_Default_Dark_Gray: Round_Btn_Default_Dark_Gray,
@@ -1760,6 +1775,8 @@ const svgMap = {
   Question: Question,
   CheckSelectedBox: CheckSelectedBox,
   CheckBox: CheckBox,
+  successAnswerIcon: successAnswerIcon,
+  failAnswerIcon: failAnswerIcon,
 }
 
 export default ({

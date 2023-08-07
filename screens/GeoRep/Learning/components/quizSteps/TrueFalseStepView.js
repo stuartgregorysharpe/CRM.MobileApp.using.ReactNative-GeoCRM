@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Text, View, Platform, StyleSheet, TouchableOpacity } from "react-native";
 
-const StepView = ({ label }) => {
+const StepView = ({ label, correct_answer }) => {
 
     const [selected, setSelected] = useState(null);
 
     const handlePress = (value) => {
+        value ? correct_answer("true") : correct_answer("false");
         setSelected(value);
     };
 
@@ -18,7 +19,7 @@ const StepView = ({ label }) => {
                         style={[styles.button, selected === true ? styles.selected : styles.notSelected]}
                         onPress={() => handlePress(true)}
                     >
-                        <Text style={selected === true ? "" : styles.notSelectedText}>True</Text>
+                        <Text style={selected === true ? styles.selectedText : styles.notSelectedText}>True</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -59,12 +60,24 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         margin: 10,
         borderRadius: 20,
-        borderColor: "black",
+        borderColor: "gray",
         width: 100,
         height: 25,
         padding: 0,
         textAlign: "center",
         alignItems: "center",
         justifyContent: "center"
+    },
+    selected: {
+        backgroundColor: '#133c8b', // or whatever color you want for selected
+    },
+    notSelected: {
+        backgroundColor: 'white', // or whatever color you want for not selected
+    },
+    selectedText: {
+        color: 'white', // or whatever text color you want for selected
+    },
+    notSelectedText: {
+        color: 'black', // or whatever text color you want for not selected
     },
 });
