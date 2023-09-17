@@ -1,3 +1,30 @@
+# GeoCRM Mobile APP using React Native
+
+Geo CRM is a cutting-edge React Native mobile application designed to provide CRM and CMS. Everything is possible.
+(This is the copied repository form my business repository of bitbucket. Forked form Bitbucket)
+
+# Move here 
+https://play.google.com/store/search?q=Geo+CRM&c=apps&pli=1
+
+Feature 1: Modern Style DashBoard
+
+Feature 2: Learning Module
+
+Feature 3: Shipping, Booking
+
+Feature 4: Office, Report, Galery and so on
+
+...
+# Install dependencies:
+npm install or yarn
+
+# Support
+If you encounter any issues or require support, please open an issue on our GitHub issues page.
+
+# License
+This project is licensed under the MIT License - see the LICENSE.md file for details.
+
+
 #When Uncategorise error
 nvm alias default system
 
