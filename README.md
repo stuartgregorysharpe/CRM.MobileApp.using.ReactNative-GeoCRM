@@ -1,4 +1,4 @@
-# GeoCRM Mobile APP using React Native
+# GeoCRM Mobile APP using-React Native
 
 Geo CRM is a cutting-edge React Native mobile application designed to provide CRM and CMS. Everything is possible.
 (This is the copied repository form my business repository of bitbucket. Forked form Bitbucket)
